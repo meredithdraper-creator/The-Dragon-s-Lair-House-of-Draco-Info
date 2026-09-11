@@ -337,6 +337,86 @@
   .dept-card h4{font-size:.98rem;margin:.4rem 0 .5rem 0;}
   .dept-card p{font-size:.87rem;color:#4b4552;margin-bottom:.6rem;}
   .dept-card .label{font-size:.72rem;color:#8a8392;font-weight:600;margin-bottom:.15rem;}
+  .dept-card.current{box-shadow:inset 0 0 0 2px var(--magenta);}
+
+  /* ---------- Dragon's Lair (House Leadership) ---------- */
+  .leader-hero{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(160deg, var(--void) 0%, var(--plum) 55%, var(--violet-deep) 100%);
+    padding:3rem 2rem;
+    text-align:center;
+  }
+  .leader-hero-badge{
+    position:absolute;
+    left:-10px;
+    top:50%;
+    transform:translateY(-50%);
+    width:260px;
+    height:auto;
+    opacity:.95;
+    pointer-events:none;
+    z-index:1;
+  }
+  .leader-hero-inner{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:0 auto;
+  }
+  .leader-hero-wordmark{
+    display:block;
+    margin:0 auto 1.2rem auto;
+    width:min(420px, 80%);
+    height:auto;
+  }
+  .leader-hero h1{
+    color:var(--white);
+    font-size:clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom:.5rem;
+  }
+  .leader-hero p{
+    color:rgba(255,255,255,.88);
+    font-size:1.05rem;
+    max-width:52ch;
+    margin:0 auto;
+  }
+  @media(max-width:760px){
+    .leader-hero-badge{
+      position:static;
+      transform:none;
+      display:block;
+      width:140px;
+      margin:0 auto 1.2rem auto;
+    }
+  }
+
+  .faculty-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1px;
+    background:var(--silver-line);
+    border:1px solid var(--silver-line);
+    margin:1.4rem 0;
+  }
+  @media(max-width:700px){.faculty-grid{grid-template-columns:1fr;}}
+  .faculty-card{
+    background:var(--white);
+    padding:1.2rem 1.3rem;
+    display:flex;
+    gap:1rem;
+    align-items:flex-start;
+  }
+  .faculty-info h4{margin:0 0 .15rem 0;font-size:1rem;}
+  .faculty-role{margin:0 0 .35rem 0;font-size:.82rem;color:#6b6574;}
+  .faculty-classes{margin:0 0 .15rem 0;font-size:.88rem;color:#46404f;}
+  .faculty-room{margin:0;font-size:.82rem;color:var(--violet-deep);font-weight:600;}
+
+  .captain-panel{
+    display:flex;
+    align-items:center;
+    gap:1.4rem;
+  }
 
   .goal-log{list-style:none;margin:1rem 0;padding:0;}
   .goal-log li{
@@ -379,6 +459,7 @@
   </div>
   <nav class="tabs" id="tabs">
     <button data-page="home" class="active">Home</button>
+    <button data-page="leadership">Dragon's Lair</button>
     <button data-page="watch">Weekly Den Keepers</button>
     <button data-page="vault">Vault Rotation &amp; Den Guides</button>
     <button data-page="tutors">Wisdom Keepers</button>
@@ -429,6 +510,26 @@
     </div>
   </section>
 
+  <!-- ============ DRAGON'S LAIR (HOUSE LEADERSHIP) ============ -->
+  <section class="page" id="page-leadership">
+    <div class="leader-hero">
+      <img class="leader-hero-badge" src="assets/draco-hex.png" alt="" aria-hidden="true">
+      <div class="leader-hero-inner">
+        <img class="leader-hero-wordmark" src="assets/draco-title-white.png" alt="House of Draco">
+        <h1>Welcome to the Dragon's Lair</h1>
+        <p>Keeping our hall in order is a joint effort &mdash; showing loyalty to Draco means doing your part to help maintain it.</p>
+      </div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:2.2rem;">House faculty</div>
+    <h2>The teachers who lead our House</h2>
+    <div class="faculty-grid" id="faculty-grid"></div>
+
+    <div class="eyebrow" style="margin-top:2.2rem;">Student leadership</div>
+    <h2>House Captain</h2>
+    <div class="panel captain-panel" id="captain-spotlight"></div>
+  </section>
+
   <!-- ============ WEEKLY DEN KEEPERS ============ -->
   <section class="page" id="page-watch">
     <div class="eyebrow">Hallway duty</div>
@@ -465,7 +566,7 @@
     </table>
 
     <h3>Become a Den Guide</h3>
-    <p class="lede" style="font-size:.93rem;">Den Guides help their homeroom stay organized between the weekly cleanout &mdash; a standing role, not just a duty week.</p>
+    <p class="lede" style="font-size:.93rem;">Den Guides help their homeroom stay organized between the weekly cleanout &mdash; a standing role, not just a duty week. This is the same sign-up form as Wisdom Keepers &mdash; just check whichever duties apply to you.</p>
     <div id="den-guide-form-embed"></div>
 
     <h3 style="margin-top:2rem;">Current Den Guides</h3>
@@ -479,6 +580,7 @@
     <p class="lede">Students who've volunteered to help classmates study for classes, organize classwork, or review notes &mdash; by subject.</p>
 
     <h3>Sign up as a Wisdom Keeper</h3>
+    <p class="lede" style="font-size:.93rem;">This is the same Draco Duties form as Den Guides &mdash; just check "Wisdom Keeper" and fill in your subject(s).</p>
     <div id="wisdom-form-embed"></div>
 
     <div class="flex-between" style="margin-top:1.8rem;">
