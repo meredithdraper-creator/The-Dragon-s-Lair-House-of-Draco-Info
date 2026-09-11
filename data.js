@@ -160,3 +160,60 @@ const GRATITUDE_METHODS = [
   { id: "service", label: "Act of service", detail: "Helping out in a way that makes their job a little easier." },
   { id: "appreciation", label: "Public appreciation", detail: "A shout-out, poster, or mention that recognizes them in front of others." },
 ];
+
+// ---- House Faculty: Draco's teachers and staff leadership ----
+// photo: path to an image in assets/faculty/ (e.g. "assets/faculty/alden.jpg").
+// Leave photo as "" to show an initials placeholder until you have a real photo.
+// EDIT ME: replace with your real House of Draco faculty.
+const HOUSE_FACULTY = [
+  {
+    name: "Mr. Alden",
+    role: "Homeroom Teacher, HR 101",
+    classes: ["Algebra II", "Geometry"],
+    room: "204",
+    photo: "",
+  },
+  {
+    name: "Ms. Farrow",
+    role: "Homeroom Teacher, HR 102",
+    classes: ["English 10", "AP English Language"],
+    room: "118",
+    photo: "",
+  },
+  {
+    name: "Mr. Osei",
+    role: "Homeroom Teacher, HR 103",
+    classes: ["Biology", "Environmental Science"],
+    room: "231",
+    photo: "",
+  },
+  {
+    name: "Ms. Whitlock",
+    role: "Homeroom Teacher, HR 104",
+    classes: ["World History", "AP U.S. History"],
+    room: "112",
+    photo: "",
+  },
+  {
+    name: "Mr. Reyes",
+    role: "Homeroom Teacher, HR 105",
+    classes: ["Spanish II", "Spanish III"],
+    room: "145",
+    photo: "",
+  },
+  {
+    name: "Ms. Bianchi",
+    role: "Homeroom Teacher, HR 106",
+    classes: ["Chemistry", "Physics"],
+    room: "227",
+    photo: "",
+  },
+];
+
+// ---- House Captain: this year's student leader for the House of Draco ----
+// EDIT ME: replace with your real House Captain's name, year, and photo.
+const HOUSE_CAPTAIN = {
+  name: "Add your House Captain's name",
+  year: "2026–27",
+  photo: "",
+};
