@@ -1,9 +1,10 @@
 /* ============================================================
    HOUSE OF DRACO — APP LOGIC
-   Static config (homerooms, checklist wording, department info)
-   comes from data.js. Anything students or teachers add over
-   time — sign-ups, gratitude log entries, week-by-week duty
-   assignments — comes live from Google Sheets via sheets.js.
+   Static config (homerooms, checklist wording, department info,
+   faculty, captain) comes from data.js. Anything students or
+   teachers add over time — sign-ups, gratitude log entries,
+   week-by-week duty assignments, monthly department picks —
+   comes live from Google Sheets via sheets.js.
    ============================================================ */
 
 (function () {
@@ -26,6 +27,9 @@
     d.setDate(d.getDate() + n * 7);
     return d;
   }
+  function currentMonthKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  }
   const ROTATION_EPOCH = mondayOf(new Date("2026-01-05T00:00:00"));
   function weekIndexSince(monday) {
     const ms = mondayOf(monday) - ROTATION_EPOCH;
@@ -40,12 +44,33 @@
     const hr = HOMEROOMS.find((h) => h.label.trim().toLowerCase() === l);
     return hr ? hr.id : null;
   }
+  function deptByIdOrName(str) {
+    const s = (str || "").trim().toLowerCase();
+    return GRATITUDE_DEPARTMENTS.find((d) => d.id.toLowerCase() === s || d.name.toLowerCase() === s) || null;
+  }
   function scheduledHR(weekMonday, overrides, order) {
     const wISO = isoDate(weekMonday);
     const override = overrides.find((o) => o.weekOf === wISO);
     if (override) return override.hrId;
     const idx = ((weekIndexSince(weekMonday) % order.length) + order.length) % order.length;
     return order[idx];
+  }
+  function initials(name) {
+    return (name || "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((w) => w[0].toUpperCase())
+      .join("");
+  }
+  function avatarHTML(name, photo, size) {
+    const s = size || 64;
+    if (photo) {
+      return `<img src="${photo}" alt="${name}" style="width:${s}px;height:${s}px;border-radius:50%;object-fit:cover;display:block;">`;
+    }
+    return `<div style="width:${s}px;height:${s}px;border-radius:50%;background:linear-gradient(135deg, var(--violet-deep), var(--magenta));color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:${Math.round(
+      s * 0.36
+    )}px;flex:none;">${initials(name)}</div>`;
   }
 
   // ---------- Tabs ----------
@@ -64,33 +89,40 @@
   const today = new Date();
   const thisMonday = mondayOf(today);
 
-  // ---------- Gratitude department of the month (static rotation, data.js) ----------
+  // ---------- Gratitude department of the month ----------
   function currentMonthIndex(date) {
     const epoch = new Date("2026-01-01T00:00:00");
     return (date.getFullYear() - epoch.getFullYear()) * 12 + (date.getMonth() - epoch.getMonth());
   }
-  function deptForMonth(date) {
+  function rotationDeptForMonth(date) {
     const idx = currentMonthIndex(date);
     const n = GRATITUDE_DEPARTMENTS.length;
     return GRATITUDE_DEPARTMENTS[((idx % n) + n) % n];
   }
-  const currentDept = deptForMonth(today);
-  document.getElementById("home-dept").textContent = currentDept.name;
-  document.getElementById("flame-icon").textContent = currentDept.icon;
-  document.getElementById("flame-name").textContent = currentDept.name;
-  document.getElementById("flame-desc").textContent = currentDept.description;
-  document.getElementById("flame-detail-name").textContent = `How ${currentDept.name} supports students`;
-  document.getElementById("flame-direct").textContent = currentDept.directSupport;
-  document.getElementById("flame-indirect").textContent = currentDept.indirectSupport;
 
   document.getElementById("dept-grid").innerHTML = GRATITUDE_DEPARTMENTS.map(
     (d) => `
-    <div class="dept-card">
+    <div class="dept-card" data-dept-id="${d.id}">
       <div class="icon">${d.icon}</div>
       <h4>${d.name}</h4>
       <p>${d.description}</p>
     </div>`
   ).join("");
+
+  function renderDeptSpotlight(dept) {
+    document.getElementById("home-dept").textContent = dept.name;
+    document.getElementById("flame-icon").textContent = dept.icon;
+    document.getElementById("flame-name").textContent = dept.name;
+    document.getElementById("flame-desc").textContent = dept.description;
+    document.getElementById("flame-detail-name").textContent = `How ${dept.name} supports students`;
+    document.getElementById("flame-direct").textContent = dept.directSupport;
+    document.getElementById("flame-indirect").textContent = dept.indirectSupport;
+    document.querySelectorAll(".dept-card").forEach((card) => {
+      card.classList.toggle("current", card.dataset.deptId === dept.id);
+    });
+  }
+  // Render the rotation-only pick immediately so the page isn't empty while sheets load.
+  renderDeptSpotlight(rotationDeptForMonth(today));
 
   // ---------- Live-data banner helper ----------
   function connectionNote(el, isLive) {
@@ -113,29 +145,45 @@
   }
 
   // ============================================================
-  // WEEKLY DEN KEEPERS + VAULT ROTATION (schedule comes from the
-  // teacher-editable "Schedule" tab; falls back to data.js
-  // defaults + auto-rotation if a week has no entry)
+  // WEEKLY DEN KEEPERS + VAULT ROTATION + MONTHLY FLAME DEPARTMENT
+  // (all three come from the teacher-editable "Schedule" tab;
+  // fall back to data.js defaults / rotation if not set)
   // ============================================================
   async function loadSchedule() {
     const rows = (await fetchSheetTab(SHEETS_CONFIG.scheduleUrl)) || SAMPLE_SCHEDULE;
     const isLive = !!SHEETS_CONFIG.scheduleUrl;
-    const parsed = rows
-      .map((r) => ({
-        program: (r.Program || "").trim().toLowerCase(),
-        weekOf: (r["Week Of"] || "").trim(),
-        hrId: hrIdFromLabel(r.Homeroom),
-      }))
-      .filter((r) => r.weekOf && r.hrId);
+    const parsed = rows.map((r) => ({
+      program: (r.Program || "").trim().toLowerCase(),
+      weekOf: (r["Week Of"] || "").trim(),
+      homeroom: (r.Homeroom || "").trim(),
+    }));
 
-    const watchOverrides = parsed.filter((r) => r.program === "weekly_watch").concat(WEEKLY_WATCH_SCHEDULE);
-    const vaultOverrides = parsed.filter((r) => r.program === "vault").concat(VAULT_ROTATION_SCHEDULE);
+    const watchOverrides = parsed
+      .filter((r) => r.program === "weekly_watch")
+      .map((r) => ({ weekOf: r.weekOf, hrId: hrIdFromLabel(r.homeroom) }))
+      .filter((r) => r.weekOf && r.hrId)
+      .concat(WEEKLY_WATCH_SCHEDULE);
+    const vaultOverrides = parsed
+      .filter((r) => r.program === "vault")
+      .map((r) => ({ weekOf: r.weekOf, hrId: hrIdFromLabel(r.homeroom) }))
+      .filter((r) => r.weekOf && r.hrId)
+      .concat(VAULT_ROTATION_SCHEDULE);
     const order = HOMEROOMS.map((h) => h.id);
 
     const watchHRThisWeek = scheduledHR(thisMonday, watchOverrides, order);
     const vaultHRThisWeek = scheduledHR(thisMonday, vaultOverrides, VAULT_ROTATION_ORDER);
     document.getElementById("home-watch-hr").textContent = hrLabel(watchHRThisWeek);
     document.getElementById("home-vault-hr").textContent = hrLabel(vaultHRThisWeek);
+
+    // Monthly Loyalty Flame department override
+    const monthKey = currentMonthKey(today);
+    const flameOverrideRow = parsed.find((r) => {
+      if (r.program !== "flame_department" || !r.weekOf) return false;
+      const parts = r.weekOf.split("-");
+      return parts.length >= 2 && `${parts[0]}-${parts[1]}` === monthKey;
+    });
+    const overrideDept = flameOverrideRow ? deptByIdOrName(flameOverrideRow.homeroom) : null;
+    renderDeptSpotlight(overrideDept || rotationDeptForMonth(today));
 
     const checklistEl = document.getElementById("watch-checklist");
     checklistEl.innerHTML = WEEKLY_WATCH_CHECKLIST.map(
@@ -166,33 +214,35 @@
   }
 
   // ============================================================
-  // DEN GUIDES (from the "Den Guides" form-responses tab)
+  // DRACO DUTIES — one shared form/tab covers both Den Guides
+  // and Wisdom Keepers; filtered client-side into two rosters.
   // ============================================================
-  async function loadDenGuides() {
-    mountForm("den-guide-form-embed", SHEETS_CONFIG.denGuidesFormEmbed);
-    const rows = await fetchSheetTab(SHEETS_CONFIG.denGuidesUrl);
-    const isLive = !!SHEETS_CONFIG.denGuidesUrl && rows;
-    const data = rows || SAMPLE_DEN_GUIDES;
-    const el = document.getElementById("den-guide-roster");
-    if (!data.length) {
-      el.innerHTML = `<li><span class="meta">No Den Guides signed up yet.</span></li>`;
+  let wisdomRows = [];
+  function dutiesOf(row) {
+    return (row["Which duties are you volunteering for?"] || "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase());
+  }
+  async function loadDracoDuties() {
+    mountForm("den-guide-form-embed", SHEETS_CONFIG.dracoDutiesFormEmbed);
+    mountForm("wisdom-form-embed", SHEETS_CONFIG.dracoDutiesFormEmbed);
+
+    const rows = await fetchSheetTab(SHEETS_CONFIG.dracoDutiesUrl);
+    const isLive = !!SHEETS_CONFIG.dracoDutiesUrl && rows;
+    const data = rows || SAMPLE_DRACO_DUTIES;
+
+    const denGuides = data.filter((r) => dutiesOf(r).includes("den guide"));
+    const guideEl = document.getElementById("den-guide-roster");
+    if (!denGuides.length) {
+      guideEl.innerHTML = `<li><span class="meta">No Den Guides signed up yet.</span></li>`;
     } else {
-      el.innerHTML = data
+      guideEl.innerHTML = denGuides
         .map((k) => `<li><span class="who">${k.Name}</span><span class="meta">${k.Homeroom}</span></li>`)
         .join("");
     }
-    connectionNote(el, isLive);
-  }
+    connectionNote(guideEl, isLive);
 
-  // ============================================================
-  // WISDOM KEEPERS (from the "Wisdom Keepers" form-responses tab)
-  // ============================================================
-  let wisdomRows = [];
-  async function loadWisdomKeepers() {
-    mountForm("wisdom-form-embed", SHEETS_CONFIG.wisdomKeepersFormEmbed);
-    const rows = await fetchSheetTab(SHEETS_CONFIG.wisdomKeepersUrl);
-    const isLive = !!SHEETS_CONFIG.wisdomKeepersUrl && rows;
-    wisdomRows = rows || SAMPLE_WISDOM_KEEPERS;
+    wisdomRows = data.filter((r) => dutiesOf(r).includes("wisdom keeper"));
     renderWisdomKeepers(document.getElementById("wisdom-filter").value);
     connectionNote(document.getElementById("wisdom-roster"), isLive);
   }
@@ -246,9 +296,6 @@
     connectionNote(el, isLive);
   }
 
-  function currentMonthKey(date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-  }
   async function loadGratitudeLog() {
     mountForm("gratitude-form-embed", SHEETS_CONFIG.gratitudeFormEmbed);
     const rows = await fetchSheetTab(SHEETS_CONFIG.gratitudeUrl);
@@ -276,6 +323,37 @@
     connectionNote(el, isLive);
   }
 
+  // ============================================================
+  // DRAGON'S LAIR — House Leadership page (static, from data.js)
+  // ============================================================
+  function renderLeadership() {
+    const facultyEl = document.getElementById("faculty-grid");
+    if (facultyEl) {
+      facultyEl.innerHTML = HOUSE_FACULTY.map(
+        (f) => `
+        <div class="faculty-card">
+          ${avatarHTML(f.name, f.photo, 72)}
+          <div class="faculty-info">
+            <h4>${f.name}</h4>
+            <p class="faculty-role">${f.role}</p>
+            <p class="faculty-classes">${f.classes.join(", ")}</p>
+            <p class="faculty-room">Room ${f.room}</p>
+          </div>
+        </div>`
+      ).join("");
+    }
+    const captainEl = document.getElementById("captain-spotlight");
+    if (captainEl) {
+      captainEl.innerHTML = `
+        ${avatarHTML(HOUSE_CAPTAIN.name, HOUSE_CAPTAIN.photo, 120)}
+        <div>
+          <div class="eyebrow" style="color:var(--magenta);">House Captain, ${HOUSE_CAPTAIN.year}</div>
+          <h3 style="margin:0;">${HOUSE_CAPTAIN.name}</h3>
+        </div>`;
+    }
+  }
+  renderLeadership();
+
   // ---------- Teacher "open the spreadsheet" link ----------
   const sheetLink = document.getElementById("watch-sheet-link");
   if (SHEETS_CONFIG.spreadsheetEditUrl) {
@@ -289,8 +367,7 @@
   // ---------- Load everything, then refresh on an interval ----------
   function loadAll() {
     loadSchedule();
-    loadDenGuides();
-    loadWisdomKeepers();
+    loadDracoDuties();
     loadFlameKeepers();
     loadGratitudeLog();
   }
