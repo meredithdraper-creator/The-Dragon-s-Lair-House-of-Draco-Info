@@ -66,28 +66,53 @@
   .top-inner{
     max-width:960px;
     margin:0 auto;
-    display:flex;
-    align-items:center;
-    gap:1.1rem;
-    padding-bottom:1.8rem;
+    padding-bottom:2.4rem;
     border-bottom:1px solid rgba(201,58,232,.3);
     position:relative;
+    text-align:center;
   }
-  .crest{
-    width:52px;height:52px;flex:none;
+  .site-hero-badge{
+    position:absolute;
+    left:-10px;
+    top:50%;
+    transform:translateY(-50%);
+    width:220px;
+    height:auto;
+    opacity:.95;
+    pointer-events:none;
+    z-index:1;
   }
-  .crest img{width:100%;height:100%;display:block;object-fit:contain;}
-  .top-text .wordmark{
-    height:34px;
-    width:auto;
+  .site-hero-content{
+    position:relative;
+    z-index:2;
+    max-width:640px;
+    margin:0 auto;
+  }
+  .site-hero-wordmark{
     display:block;
-    margin-bottom:.3rem;
+    margin:0 auto 1.2rem auto;
+    width:min(420px, 80%);
+    height:auto;
   }
-  .top-text p{
-    margin:.2rem 0 0 0;
-    color:var(--magenta-bright);
-    font-size:1rem;
-    max-width:46ch;
+  .top-inner h1{
+    color:var(--white);
+    font-size:clamp(1.8rem, 4vw, 2.6rem);
+    margin-bottom:.5rem;
+  }
+  .top-inner p{
+    margin:0 auto;
+    color:rgba(255,255,255,.88);
+    font-size:1.05rem;
+    max-width:52ch;
+  }
+  @media(max-width:760px){
+    .site-hero-badge{
+      position:static;
+      transform:none;
+      display:block;
+      width:120px;
+      margin:0 auto 1rem auto;
+    }
   }
 
   nav.tabs{
@@ -339,59 +364,7 @@
   .dept-card .label{font-size:.72rem;color:#8a8392;font-weight:600;margin-bottom:.15rem;}
   .dept-card.current{box-shadow:inset 0 0 0 2px var(--magenta);}
 
-  /* ---------- Dragon's Lair (House Leadership) ---------- */
-  .leader-hero{
-    position:relative;
-    overflow:hidden;
-    background:linear-gradient(160deg, var(--void) 0%, var(--plum) 55%, var(--violet-deep) 100%);
-    padding:3rem 2rem;
-    text-align:center;
-  }
-  .leader-hero-badge{
-    position:absolute;
-    left:-10px;
-    top:50%;
-    transform:translateY(-50%);
-    width:260px;
-    height:auto;
-    opacity:.95;
-    pointer-events:none;
-    z-index:1;
-  }
-  .leader-hero-inner{
-    position:relative;
-    z-index:2;
-    max-width:640px;
-    margin:0 auto;
-  }
-  .leader-hero-wordmark{
-    display:block;
-    margin:0 auto 1.2rem auto;
-    width:min(420px, 80%);
-    height:auto;
-  }
-  .leader-hero h1{
-    color:var(--white);
-    font-size:clamp(1.8rem, 4vw, 2.6rem);
-    margin-bottom:.5rem;
-  }
-  .leader-hero p{
-    color:rgba(255,255,255,.88);
-    font-size:1.05rem;
-    max-width:52ch;
-    margin:0 auto;
-  }
-  @media(max-width:760px){
-    .leader-hero-badge{
-      position:static;
-      transform:none;
-      display:block;
-      width:140px;
-      margin:0 auto 1.2rem auto;
-    }
-  }
-
-  .faculty-grid{
+  /* ---------- House of Draco Leaders ---------- */
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:1px;
@@ -449,17 +422,16 @@
 
 <header class="top">
   <div class="top-inner">
-    <div class="crest" aria-hidden="true">
-      <img src="assets/draco-hex.png" alt="">
-    </div>
-    <div class="top-text">
-      <img class="wordmark" src="assets/draco-title-white.png" alt="House of Draco">
-      <p>Draco's Den &mdash; hallway watch, locker keeping, peer support, and gratitude, run by the House.</p>
+    <img class="site-hero-badge" src="assets/draco-hex.png" alt="" aria-hidden="true">
+    <div class="site-hero-content">
+      <img class="site-hero-wordmark" src="assets/draco-title-white.png" alt="House of Draco">
+      <h1>Welcome to the Dragon's Lair</h1>
+      <p>Keeping our hall in order is a joint effort &mdash; showing loyalty to Draco means doing your part to help maintain it.</p>
     </div>
   </div>
   <nav class="tabs" id="tabs">
     <button data-page="home" class="active">Home</button>
-    <button data-page="leadership">Dragon's Lair</button>
+    <button data-page="leadership">House of Draco Leaders</button>
     <button data-page="watch">Weekly Den Keepers</button>
     <button data-page="vault">Vault Rotation &amp; Den Guides</button>
     <button data-page="tutors">Wisdom Keepers</button>
@@ -510,23 +482,16 @@
     </div>
   </section>
 
-  <!-- ============ DRAGON'S LAIR (HOUSE LEADERSHIP) ============ -->
+  <!-- ============ HOUSE OF DRACO LEADERS ============ -->
   <section class="page" id="page-leadership">
-    <div class="leader-hero">
-      <img class="leader-hero-badge" src="assets/draco-hex.png" alt="" aria-hidden="true">
-      <div class="leader-hero-inner">
-        <img class="leader-hero-wordmark" src="assets/draco-title-white.png" alt="House of Draco">
-        <h1>Welcome to the Dragon's Lair</h1>
-        <p>Keeping our hall in order is a joint effort &mdash; showing loyalty to Draco means doing your part to help maintain it.</p>
-      </div>
-    </div>
+    <div class="eyebrow">House leadership</div>
+    <h2>House of Draco Leaders</h2>
+    <p class="lede">Meet the faculty and student leaders who guide the House of Draco.</p>
 
-    <div class="eyebrow" style="margin-top:2.2rem;">House faculty</div>
-    <h2>The teachers who lead our House</h2>
+    <h3 style="margin-top:1.6rem;">House faculty</h3>
     <div class="faculty-grid" id="faculty-grid"></div>
 
-    <div class="eyebrow" style="margin-top:2.2rem;">Student leadership</div>
-    <h2>House Captain</h2>
+    <h3 style="margin-top:2rem;">House Captain</h3>
     <div class="panel captain-panel" id="captain-spotlight"></div>
   </section>
 
