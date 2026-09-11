@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>House of Draco &mdash; Draco's Den</title>
+<link rel="icon" type="image/png" href="assets/draco-hex.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1620;
+    --void:#170b22;
+    --plum:#2c1240;
+    --violet-deep:#4a1268;
+    --violet:#7d12a0;
+    --magenta:#b405da;
+    --magenta-bright:#c93be8;
+    --magenta-soft:#e9c7f5;
+    --silver:#c9cacb;
+    --silver-line:#d9d3de;
+    --paper:#f6f3f8;
+    --paper-dim:#ece5f0;
+    --white:#fffdfe;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:"Work Sans", sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.5;
+  }
+  h1,h2,h3,h4{
+    font-family:"Fraunces", serif;
+    font-weight:600;
+    margin:0 0 .4em 0;
+    line-height:1.15;
+  }
+  p{margin:0 0 1em 0;}
+  a{color:inherit;}
+  button, .btn{
+    font-family:"Work Sans", sans-serif;
+    font-size:.95rem;
+    cursor:pointer;
+  }
+
+  /* ---------- Header ---------- */
+  header.top{
+    background:linear-gradient(160deg, var(--void) 0%, var(--plum) 55%, var(--violet-deep) 100%);
+    color:var(--paper);
+    padding:2.6rem 1.5rem 0 1.5rem;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::before{
+    content:"";
+    position:absolute;
+    top:-40px; right:-60px;
+    width:340px; height:340px;
+    background:url("assets/draco-silhouette-white.png") center/contain no-repeat;
+    opacity:.06;
+    pointer-events:none;
+  }
+  .top-inner{
+    max-width:960px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:1.1rem;
+    padding-bottom:1.8rem;
+    border-bottom:1px solid rgba(201,58,232,.3);
+    position:relative;
+  }
+  .crest{
+    width:52px;height:52px;flex:none;
+  }
+  .crest img{width:100%;height:100%;display:block;object-fit:contain;}
+  .top-text .wordmark{
+    height:34px;
+    width:auto;
+    display:block;
+    margin-bottom:.3rem;
+  }
+  .top-text p{
+    margin:.2rem 0 0 0;
+    color:var(--magenta-bright);
+    font-size:1rem;
+    max-width:46ch;
+  }
+
+  nav.tabs{
+    max-width:960px;
+    margin:0 auto;
+    display:flex;
+    gap:1.6rem;
+    overflow-x:auto;
+    padding-top:.2rem;
+    position:relative;
+  }
+  nav.tabs button{
+    background:none;
+    border:none;
+    color:rgba(246,243,248,.6);
+    padding:.85rem 0 .8rem 0;
+    font-size:.98rem;
+    font-family:"Work Sans", sans-serif;
+    font-weight:500;
+    border-bottom:2px solid transparent;
+    white-space:nowrap;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  nav.tabs button:hover{color:var(--white);}
+  nav.tabs button.active{
+    color:var(--white);
+    border-bottom:2px solid var(--magenta-bright);
+    font-weight:600;
+  }
+
+  main{max-width:960px;margin:0 auto;padding:2.4rem 1.5rem 5rem 1.5rem;}
+  section.page{display:none;}
+  section.page.active{display:block;}
+
+  .eyebrow{
+    color:var(--violet);
+    font-weight:600;
+    font-size:.85rem;
+    margin-bottom:.3rem;
+  }
+  .lede{
+    font-size:1.08rem;
+    max-width:62ch;
+    color:#46404f;
+  }
+
+  /* ---------- Home page hero + cards ---------- */
+  .hero-row{
+    display:flex;
+    align-items:center;
+    gap:2rem;
+    justify-content:space-between;
+  }
+  .hero-copy{flex:1 1 340px;}
+  .hero-dragon{
+    width:220px;
+    height:auto;
+    flex:none;
+    filter:drop-shadow(0 10px 24px rgba(74,18,104,.25));
+  }
+  @media(max-width:700px){
+    .hero-row{flex-direction:column;align-items:flex-start;}
+    .hero-dragon{width:150px;align-self:center;}
+  }
+  .home-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1.1rem;
+    margin-top:1.8rem;
+  }
+  @media(max-width:760px){.home-grid{grid-template-columns:1fr;}}
+  .spot-card{
+    background:var(--white);
+    border:1px solid var(--silver-line);
+    border-left:4px solid var(--violet);
+    padding:1.2rem 1.3rem;
+  }
+  .spot-card.accent-a{border-left-color:var(--violet);}
+  .spot-card.accent-b{border-left-color:var(--violet-deep);}
+  .spot-card.accent-c{border-left-color:var(--magenta);}
+  .spot-card h3{font-size:1.05rem;margin-bottom:.5rem;}
+  .spot-card .tag{
+    font-size:.8rem;
+    color:#6b6574;
+    margin-bottom:.5rem;
+  }
+  .spot-card .value{
+    font-family:"Fraunces", serif;
+    font-size:1.35rem;
+    font-weight:600;
+    color:var(--violet-deep);
+  }
+
+  /* ---------- Checklist ---------- */
+  .checklist{list-style:none;margin:1.4rem 0;padding:0;}
+  .checklist li{
+    display:flex;
+    gap:.9rem;
+    padding:1rem 0;
+    border-top:1px solid var(--silver-line);
+  }
+  .checklist li:last-child{border-bottom:1px solid var(--silver-line);}
+  .checklist .num{
+    font-family:"Fraunces", serif;
+    font-weight:600;
+    color:var(--magenta);
+    font-size:1.05rem;
+    flex:none;
+    width:1.6rem;
+  }
+  .checklist h4{margin-bottom:.2rem;font-size:1rem;}
+  .checklist p{margin:0;color:#4b4552;font-size:.95rem;}
+
+  /* ---------- Tables ---------- */
+  table.rota{
+    width:100%;
+    border-collapse:collapse;
+    margin:1rem 0 2rem 0;
+  }
+  table.rota th, table.rota td{
+    text-align:left;
+    padding:.7rem .5rem;
+    border-bottom:1px solid var(--silver-line);
+    font-size:.95rem;
+  }
+  table.rota th{
+    color:#6b6574;
+    font-weight:600;
+    font-size:.82rem;
+  }
+  table.rota tr.current td{background:var(--magenta-soft);font-weight:600;}
+  table.rota tr.current td:first-child{border-left:3px solid var(--magenta);padding-left:.6rem;}
+
+  /* ---------- Panels / forms ---------- */
+  .panel{
+    background:var(--white);
+    border:1px solid var(--silver-line);
+    padding:1.4rem 1.5rem;
+    margin:1.3rem 0;
+  }
+  .panel h3{font-size:1.05rem;margin-bottom:.9rem;}
+  .field{margin-bottom:.9rem;}
+  .field label{
+    display:block;
+    font-size:.85rem;
+    color:#5a5462;
+    margin-bottom:.3rem;
+    font-weight:500;
+  }
+  .field input[type=text], .field select{
+    width:100%;
+    padding:.55rem .6rem;
+    border:1px solid var(--silver-line);
+    background:var(--paper-dim);
+    font-family:"Work Sans", sans-serif;
+    font-size:.95rem;
+    color:var(--ink);
+  }
+  .checkrow{display:flex;flex-wrap:wrap;gap:.6rem;}
+  .checkrow label{
+    display:flex;align-items:center;gap:.4rem;
+    border:1px solid var(--silver-line);
+    padding:.4rem .7rem;
+    font-size:.85rem;
+    cursor:pointer;
+    background:var(--paper-dim);
+  }
+  .checkrow input{margin:0;}
+  .btn-primary{
+    background:var(--violet);
+    color:var(--white);
+    border:none;
+    padding:.65rem 1.3rem;
+    font-weight:600;
+    margin-top:.3rem;
+  }
+  .btn-primary:hover{background:var(--violet-deep);}
+  .btn-ghost{
+    background:none;
+    border:1px solid var(--silver-line);
+    padding:.4rem .8rem;
+    font-size:.82rem;
+    color:#5a5462;
+  }
+
+  .roster{list-style:none;margin:1rem 0;padding:0;}
+  .roster li{
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    padding:.75rem 0;
+    border-top:1px solid var(--silver-line);
+    font-size:.93rem;
+  }
+  .roster li:last-child{border-bottom:1px solid var(--silver-line);}
+  .roster .who{font-weight:600;}
+  .roster .meta{color:#6b6574;font-size:.85rem;}
+  .pill{
+    display:inline-block;
+    font-size:.75rem;
+    border:1px solid var(--magenta);
+    color:var(--magenta);
+    padding:.1rem .5rem;
+    margin-right:.3rem;
+  }
+
+  /* ---------- Departments (Loyalty Flame) ---------- */
+  .dept-spotlight{
+    background:linear-gradient(135deg, var(--violet-deep), var(--magenta));
+    color:var(--white);
+    padding:1.8rem 2rem;
+    margin:1.6rem 0 2rem 0;
+    display:flex;
+    gap:1.4rem;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .dept-spotlight::after{
+    content:"";
+    position:absolute;
+    right:-30px; bottom:-30px;
+    width:220px; height:220px;
+    background:url("assets/draco-silhouette-white.png") center/contain no-repeat;
+    opacity:.1;
+    pointer-events:none;
+  }
+  .dept-spotlight .icon{font-size:2.2rem;color:var(--white);position:relative;}
+  .dept-spotlight .eyebrow{color:rgba(255,255,255,.8);}
+  .dept-spotlight h2{color:var(--white);position:relative;}
+  .dept-spotlight p{color:rgba(255,255,255,.9);margin:0;position:relative;}
+
+  .dept-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--silver-line);
+    border:1px solid var(--silver-line);
+    margin:1.6rem 0;
+  }
+  @media(max-width:760px){.dept-grid{grid-template-columns:1fr;}}
+  .dept-card{
+    background:var(--white);
+    padding:1.2rem 1.3rem;
+  }
+  .dept-card .icon{color:var(--magenta);font-size:1.3rem;}
+  .dept-card h4{font-size:.98rem;margin:.4rem 0 .5rem 0;}
+  .dept-card p{font-size:.87rem;color:#4b4552;margin-bottom:.6rem;}
+  .dept-card .label{font-size:.72rem;color:#8a8392;font-weight:600;margin-bottom:.15rem;}
+
+  .goal-log{list-style:none;margin:1rem 0;padding:0;}
+  .goal-log li{
+    display:flex;
+    gap:.8rem;
+    padding:.65rem 0;
+    border-top:1px solid var(--silver-line);
+    font-size:.9rem;
+  }
+  .goal-log li:last-child{border-bottom:1px solid var(--silver-line);}
+
+  footer{
+    text-align:center;
+    color:#8a8392;
+    font-size:.82rem;
+    padding:2rem 1.5rem 3rem 1.5rem;
+  }
+
+  .note{
+    font-size:.83rem;
+    color:#6b6574;
+    border-left:3px solid var(--silver-line);
+    padding:.4rem 0 .4rem .8rem;
+    margin:1rem 0;
+  }
+  .flex-between{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="crest" aria-hidden="true">
+      <img src="assets/draco-hex.png" alt="">
+    </div>
+    <div class="top-text">
+      <img class="wordmark" src="assets/draco-title-white.png" alt="House of Draco">
+      <p>Draco's Den &mdash; hallway watch, locker keeping, peer support, and gratitude, run by the House.</p>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-page="home" class="active">Home</button>
+    <button data-page="watch">Weekly Den Keepers</button>
+    <button data-page="vault">Vault Rotation &amp; Den Guides</button>
+    <button data-page="tutors">Wisdom Keepers</button>
+    <button data-page="flame">Loyalty Flame Keepers</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ HOME ============ -->
+  <section class="page active" id="page-home">
+    <div class="hero-row">
+      <div class="hero-copy">
+        <div class="eyebrow">This week in the House</div>
+        <h2>Everything Draco is on duty for, at a glance</h2>
+        <p class="lede">Four programs, one House: keeping the halls tidy, keeping lockers in order, keeping each other supported, and keeping the people who support us seen.</p>
+      </div>
+      <img class="hero-dragon" src="assets/draco-hero.png" alt="The Draco constellation dragon, House crest" />
+    </div>
+
+    <div class="home-grid">
+      <div class="spot-card accent-a">
+        <div class="tag">Weekly Den Keepers &mdash; on duty</div>
+        <div class="value" id="home-watch-hr">&mdash;</div>
+        <h3 style="margin-top:.7rem;font-size:.9rem;color:#6b6574;">Hallway tidying &amp; lockers closed</h3>
+      </div>
+      <div class="spot-card accent-b">
+        <div class="tag">Vault Rotation &mdash; on duty</div>
+        <div class="value" id="home-vault-hr">&mdash;</div>
+        <h3 style="margin-top:.7rem;font-size:.9rem;color:#6b6574;">Weekly locker cleanout</h3>
+      </div>
+      <div class="spot-card accent-c">
+        <div class="tag">Loyalty Flame Keepers &mdash; this month</div>
+        <div class="value" id="home-dept" style="font-size:1.1rem;">&mdash;</div>
+        <h3 style="margin-top:.7rem;font-size:.9rem;color:#6b6574;">Gratitude spotlight</h3>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:2rem;">
+      <h3>How the House fits together</h3>
+      <p style="font-size:.93rem;">
+        <strong>Weekly Den Keepers</strong> is the homeroom on duty each week to tidy the hallway and make sure every locker is fully closed.
+        <strong>Vault Rotation</strong> is a separate weekly rotation where one homeroom handles the full locker cleanout, supported by our
+        <strong>Den Guides</strong> &mdash; students who've signed up to help clean out and organize lockers year-round.
+        <strong>Wisdom Keepers</strong> are students who've volunteered to help classmates study for classes, organize classwork, or review notes.
+        <strong>Loyalty Flame Keepers</strong> are students &mdash; assigned by their HR or volunteering &mdash; who share gratitude with this month's spotlighted department.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ WEEKLY DEN KEEPERS ============ -->
+  <section class="page" id="page-watch">
+    <div class="eyebrow">Hallway duty</div>
+    <h2>Weekly Den Keepers</h2>
+    <p class="lede">The homeroom on duty each week to tidy the hallway and make sure every locker is fully closed. The checklist is always the same &mdash; only the homeroom changes.</p>
+
+    <ul class="checklist" id="watch-checklist"></ul>
+
+    <h3 style="margin-top:2rem;">Rotation</h3>
+    <table class="rota">
+      <thead><tr><th>Week of</th><th>Homeroom on watch</th></tr></thead>
+      <tbody id="watch-table"></tbody>
+    </table>
+
+    <div class="panel">
+      <h3>For teachers: changing an assignment</h3>
+      <p style="font-size:.9rem;">This table reads live from the <strong>Schedule</strong> tab of the shared spreadsheet. To put a specific homeroom on watch for a specific week, open the spreadsheet and add a row to the Schedule tab:</p>
+      <p style="font-size:.9rem;"><code>Program: weekly_watch &nbsp;|&nbsp; Week Of: 2026-09-21 &nbsp;|&nbsp; Homeroom: HR 104</code></p>
+      <p style="font-size:.9rem;">No form needed for this &mdash; it's a direct edit, and the site picks it up automatically (within about a minute). Weeks with no row auto-rotate through the House in order.</p>
+      <a class="btn-ghost" href="#" id="watch-sheet-link" target="_blank" rel="noopener">Open the spreadsheet &rsaquo;</a>
+    </div>
+  </section>
+
+  <!-- ============ VAULT ROTATION & DEN GUIDES ============ -->
+  <section class="page" id="page-vault">
+    <div class="eyebrow">Lockers</div>
+    <h2>Vault Rotation &amp; the Den Guides</h2>
+    <p class="lede">Every locker in the House gets a full cleanout once a week, homeroom by homeroom. The <strong>Den Guides</strong> are the students who've volunteered to help clean out and organize lockers.</p>
+
+    <h3 style="margin-top:1.6rem;">This week's cleanout</h3>
+    <table class="rota">
+      <thead><tr><th>Week of</th><th>Homeroom</th></tr></thead>
+      <tbody id="vault-table"></tbody>
+    </table>
+
+    <h3>Become a Den Guide</h3>
+    <p class="lede" style="font-size:.93rem;">Den Guides help their homeroom stay organized between the weekly cleanout &mdash; a standing role, not just a duty week.</p>
+    <div id="den-guide-form-embed"></div>
+
+    <h3 style="margin-top:2rem;">Current Den Guides</h3>
+    <ul class="roster" id="den-guide-roster"></ul>
+  </section>
+
+  <!-- ============ WISDOM KEEPERS ============ -->
+  <section class="page" id="page-tutors">
+    <div class="eyebrow">Peer support</div>
+    <h2>Wisdom Keepers</h2>
+    <p class="lede">Students who've volunteered to help classmates study for classes, organize classwork, or review notes &mdash; by subject.</p>
+
+    <h3>Sign up as a Wisdom Keeper</h3>
+    <div id="wisdom-form-embed"></div>
+
+    <div class="flex-between" style="margin-top:1.8rem;">
+      <h3 style="margin:0;">Current Wisdom Keepers</h3>
+      <input type="text" id="wisdom-filter" placeholder="Filter by subject&hellip;" style="max-width:220px;padding:.4rem .6rem;border:1px solid var(--silver-line);background:var(--white);">
+    </div>
+    <ul class="roster" id="wisdom-roster"></ul>
+  </section>
+
+  <!-- ============ LOYALTY FLAME KEEPERS ============ -->
+  <section class="page" id="page-flame">
+    <div class="eyebrow">Gratitude</div>
+    <h2>Loyalty Flame Keepers</h2>
+    <p class="lede">Every month, the House turns its attention to a different department that keeps this school running. Loyalty Flame Keepers &mdash; assigned by their HR or volunteering &mdash; are the students who carry gratitude to that department.</p>
+
+    <div class="dept-spotlight">
+      <div class="icon" id="flame-icon">&mdash;</div>
+      <div>
+        <div class="eyebrow" style="color:var(--magenta-bright);">This month's focus</div>
+        <h2 id="flame-name">&mdash;</h2>
+        <p id="flame-desc"></p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3 id="flame-detail-name">How they support students</h3>
+      <p><span class="label" style="display:block;font-size:.72rem;color:#8a8392;font-weight:600;">DIRECTLY</span><span id="flame-direct"></span></p>
+      <p><span class="label" style="display:block;font-size:.72rem;color:#8a8392;font-weight:600;">INDIRECTLY</span><span id="flame-indirect"></span></p>
+    </div>
+
+    <h3 style="margin-top:2rem;">The full rotation</h3>
+    <div class="dept-grid" id="dept-grid"></div>
+
+    <h3 style="margin-top:2rem;">Become a Loyalty Flame Keeper</h3>
+    <p class="lede" style="font-size:.93rem;">Volunteer yourself, or let your teacher know if your HR has been assigned this month &mdash; either way, sign up here so the House knows who's carrying the flame.</p>
+    <div id="flame-keeper-form-embed"></div>
+
+    <h3 style="margin-top:1.8rem;">This month's Loyalty Flame Keepers</h3>
+    <ul class="roster" id="flame-keeper-roster"></ul>
+
+    <h3 style="margin-top:2rem;">Log a gratitude action</h3>
+    <p class="lede" style="font-size:.93rem;">Track how you're showing gratitude this month &mdash; through an encounter, a card, an act of service, or public appreciation.</p>
+    <div id="gratitude-form-embed"></div>
+
+    <div class="flex-between" style="margin-top:1.6rem;">
+      <h3 style="margin:0;">This month's log</h3>
+      <span id="goal-count" style="font-size:.85rem;color:#6b6574;"></span>
+    </div>
+    <ul class="goal-log" id="goal-log"></ul>
+  </section>
+
+</main>
+
+<footer>
+  <img src="assets/draco-title-color.png" alt="House of Draco" style="height:20px;width:auto;vertical-align:middle;margin-right:.5rem;opacity:.85;">
+  Draco's Den &mdash; edit <code>data.js</code> to update rosters and schedules.
+</footer>
+
+<script src="data.js"></script>
+<script src="sheets.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
