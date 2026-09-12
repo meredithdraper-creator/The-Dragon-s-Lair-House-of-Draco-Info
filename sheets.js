@@ -20,21 +20,20 @@
 
 const SHEETS_CONFIG = {
   // Paste your four "Publish to web" CSV links here.
-  dracoDutiesUrl: "",   // Draco Duties (Den Guide + Wisdom Keeper) form responses — one shared tab
-  flameKeepersUrl: "",  // Loyalty Flame Keepers sign-up/assignment responses
-  gratitudeUrl: "",     // Gratitude Log form responses
-  scheduleUrl: "",      // Schedule tab (teachers edit this one directly — no form)
+  facultyUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=1000012180&single=true&output=csv",        // House Leaders tab (teachers/admins edit this one directly — no form)
+  dutySignupsUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=2130038648&single=true&output=csv",    // Dragon Duty Signup form responses (Den Guide + Wisdom Keeper + Loyalty Flame Keeper — one shared tab)
+  gratitudeUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=859687409&single=true&output=csv",      // Gratitude Log form responses
+  scheduleUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=1616678462&single=true&output=csv",       // Schedule tab (teachers edit this one directly — no form)
 
-  // Paste your three Google Form "embed" links here (Send -> <> -> copy embed src).
+  // Paste your two Google Form "embed" links here (Send -> <> -> copy embed src).
   // Looks like: https://docs.google.com/forms/d/e/1FAIpQ.../viewform?embedded=true
-  dracoDutiesFormEmbed: "",   // shown on both the Vault Rotation page and the Wisdom Keepers page
-  flameKeepersFormEmbed: "",
+  dutySignupsFormEmbed: "https://docs.google.com/forms/d/e/1FAIpQLSdiWvqyLztCkdO8tbNDTbrdoJCPomaDwMrbmbr3iqkL4FrH7Q/viewform?embedded=true",  // shown on the Vault Rotation, Wisdom Keepers, AND Loyalty Flame Keepers pages
   gratitudeFormEmbed: "",
 
   // The normal (non-published) URL to the spreadsheet itself, for the
   // "Open the spreadsheet" link teachers use to edit the Schedule tab directly.
   // Looks like: https://docs.google.com/spreadsheets/d/1AbCdEfG.../edit
-  spreadsheetEditUrl: "",
+  spreadsheetEditUrl: "https://docs.google.com/spreadsheets/d/1TMTRglVa_vAiHf-z8-kqIhz30MEKXThiSMlq7iuGyKI/edit",
 
   // How often to re-check the sheets for changes, in milliseconds.
   refreshIntervalMs: 60000,
@@ -115,38 +114,45 @@ async function fetchSheetTab(url) {
    Remove or ignore this once your real sheets are wired up above.
    ============================================================ */
 
-// One shared "Draco Duties" tab covers both Den Guides and Wisdom Keepers.
-// "Which duties are you volunteering for?" holds one or both, comma-separated.
-const SAMPLE_DRACO_DUTIES = [
+// One shared "Duty Signups" tab. In your real spreadsheet this tab is built
+// with formulas that pull from the raw "Form Responses 1" tab (three separate
+// checkbox questions: Den Guide, Wisdom Keeper, Loyalty Flame Keeper) and
+// combine them into one "Which duties are you signing up for?" column — see
+// the README for the exact formulas. "Subject area(s)" only applies to the
+// Wisdom Keeper duty.
+const SAMPLE_DUTY_SIGNUPS = [
   {
     Timestamp: "9/1/2026 10:00:00",
-    Name: "Jonah Pierce",
-    Homeroom: "HR 103",
-    "Which duties are you volunteering for?": "Den Guide",
-    "Subject(s)": "",
-    "How can you help?": "",
+    "First Name": "Jonah",
+    "Last Name": "Pierce",
+    Homeroom: "Owens",
+    "Which duties are you signing up for?": "Den Guide",
+    "Subject area(s)": "",
   },
   {
     Timestamp: "9/2/2026 8:03:00",
-    Name: "Priya Chandra",
-    Homeroom: "HR 102",
-    "Which duties are you volunteering for?": "Wisdom Keeper",
-    "Subject(s)": "Algebra II, Geometry",
-    "How can you help?": "Study for classes, Review notes",
+    "First Name": "Priya",
+    "Last Name": "Chandra",
+    Homeroom: "Listenbee",
+    "Which duties are you signing up for?": "Wisdom Keeper",
+    "Subject area(s)": "Math, Science",
   },
   {
     Timestamp: "9/3/2026 14:22:00",
-    Name: "Marcus Webb",
-    Homeroom: "HR 104",
-    "Which duties are you volunteering for?": "Den Guide, Wisdom Keeper",
-    "Subject(s)": "Biology",
-    "How can you help?": "Study for classes",
+    "First Name": "Marcus",
+    "Last Name": "Webb",
+    Homeroom: "VanCamp",
+    "Which duties are you signing up for?": "Den Guide, Wisdom Keeper",
+    "Subject area(s)": "Science",
   },
-];
-
-const SAMPLE_FLAME_KEEPERS = [
-  { Timestamp: "9/1/2026 9:10:00", Name: "Simone Okafor", Homeroom: "HR 101", "How assigned?": "Volunteer" },
-  { Timestamp: "9/2/2026 8:40:00", Name: "HR 104 (whole homeroom)", Homeroom: "HR 104", "How assigned?": "Assigned by HR" },
+  {
+    Timestamp: "9/4/2026 9:10:00",
+    "First Name": "Simone",
+    "Last Name": "Okafor",
+    Homeroom: "Ledford",
+    "Which duties are you signing up for?": "Loyalty Flame Keeper",
+    "Subject area(s)": "",
+  },
 ];
 
 const SAMPLE_GRATITUDE = [
@@ -156,10 +162,25 @@ const SAMPLE_GRATITUDE = [
 
 const SAMPLE_SCHEDULE = [
   // Program, Week Of, Homeroom — this is exactly what the teacher-editable "Schedule" tab looks like.
-  { Program: "weekly_watch", "Week Of": "2026-09-14", Homeroom: "HR 103" },
-  { Program: "vault", "Week Of": "2026-09-14", Homeroom: "HR 105" },
+  { Program: "weekly_watch", "Week Of": "2026-09-14", Homeroom: "Owens" },
+  { Program: "vault", "Week Of": "2026-09-14", Homeroom: "VanCamp" },
   // "flame_department" rows pick which department is recognized in a given month.
   // "Week Of" holds the 1st of that month; "Homeroom" holds the department id or name
   // from GRATITUDE_DEPARTMENTS in data.js (e.g. "dining" or "Dining Services").
   { Program: "flame_department", "Week Of": "2026-09-01", Homeroom: "dining" },
+];
+
+// The "Faculty" tab: Name, Role, Classes, Room, Photo, Type, Year — this is
+// exactly what that teacher-editable tab looks like. "Classes" is comma-
+// separated. "Photo" can be a path like "assets/faculty/alden.jpg" or any
+// direct image URL; leave it blank to show an automatic initials avatar
+// instead. "Type" is blank (or "Faculty") for teachers/staff, and "Captain"
+// for the one row that's this year's student House Captain — that row uses
+// "Year" instead of "Classes"/"Room".
+const SAMPLE_FACULTY = [
+  { Name: "Ms. Ledford", Role: "Homeroom Teacher, Ledford", Classes: "Algebra II, Geometry", Room: "204", Photo: "", Type: "Faculty", Year: "" },
+  { Name: "Mr. Listenbee", Role: "Homeroom Teacher, Listenbee", Classes: "English 10, AP English Language", Room: "118", Photo: "", Type: "Faculty", Year: "" },
+  { Name: "Ms. Owens", Role: "Homeroom Teacher, Owens", Classes: "Biology, Environmental Science", Room: "231", Photo: "", Type: "Faculty", Year: "" },
+  { Name: "Mr. VanCamp", Role: "Homeroom Teacher, VanCamp", Classes: "World History, AP U.S. History", Room: "112", Photo: "", Type: "Faculty", Year: "" },
+  { Name: "Add your House Captain's name", Role: "", Classes: "", Room: "", Photo: "", Type: "Captain", Year: "2026–27" },
 ];
