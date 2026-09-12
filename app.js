@@ -35,9 +35,11 @@
     const ms = mondayOf(monday) - ROTATION_EPOCH;
     return Math.round(ms / (7 * 24 * 3600 * 1000));
   }
+  let hrTeacherNames = {}; // populated by loadFaculty() once House Leaders data arrives
   function hrLabel(hrId) {
     const hr = HOMEROOMS.find((h) => h.id === hrId);
-    return hr ? hr.label : hrId;
+    if (!hr) return hrId;
+    return hrTeacherNames[hrId] || hr.label;
   }
   function hrIdFromLabel(label) {
     const l = (label || "").trim().toLowerCase();
@@ -337,6 +339,19 @@
     const facultyRows = data.filter((r) => !isCaptainRow(r));
     const captainRow = data.find(isCaptainRow) || DEFAULT_CAPTAIN;
 
+    // Match each homeroom to its teacher's full name (with title) from the
+    // Role column, e.g. "Homeroom Teacher, Listenbee" -> "Ms. Listenbee" —
+    // used by hrLabel() so duty rotations show a name, not just the bare
+    // homeroom label.
+    hrTeacherNames = {};
+    HOMEROOMS.forEach((hr) => {
+      const match = facultyRows.find((f) => {
+        const role = (f.Role || "").toLowerCase();
+        return role.includes("homeroom teacher") && role.includes(hr.label.toLowerCase());
+      });
+      if (match) hrTeacherNames[hr.id] = match.Name;
+    });
+
     const facultyEl = document.getElementById("faculty-grid");
     if (facultyEl) {
       if (!facultyRows.length) {
@@ -387,9 +402,9 @@
   }
 
   // ---------- Load everything, then refresh on an interval ----------
-  function loadAll() {
+  async function loadAll() {
+    await loadFaculty(); // populate hrTeacherNames first, so schedule can use it
     loadSchedule();
-    loadFaculty();
     loadDutySignups();
     loadGratitudeLog();
   }
