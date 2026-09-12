@@ -37,7 +37,7 @@
   }
   function hrLabel(hrId) {
     const hr = HOMEROOMS.find((h) => h.id === hrId);
-    return hr ? `${hr.label} (${hr.teacher})` : hrId;
+    return hr ? hr.label : hrId;
   }
   function hrIdFromLabel(label) {
     const l = (label || "").trim().toLowerCase();
@@ -214,87 +214,86 @@
   }
 
   // ============================================================
-  // DRACO DUTIES — one shared form/tab covers both Den Guides
-  // and Wisdom Keepers; filtered client-side into two rosters.
+  // DUTY SIGNUPS — one shared form/tab (the Dragon Duty Signup
+  // form) covers Den Guides, Wisdom Keepers, AND Loyalty Flame
+  // Keepers. A student can check more than one duty per submission.
   // ============================================================
   let wisdomRows = [];
+  function fullName(row) {
+    return `${row["First Name"] || ""} ${row["Last Name"] || ""}`.trim();
+  }
   function dutiesOf(row) {
-    return (row["Which duties are you volunteering for?"] || "")
+    return (row["Which duties are you signing up for?"] || "")
       .split(",")
       .map((s) => s.trim().toLowerCase());
   }
-  async function loadDracoDuties() {
-    mountForm("den-guide-form-embed", SHEETS_CONFIG.dracoDutiesFormEmbed);
-    mountForm("wisdom-form-embed", SHEETS_CONFIG.dracoDutiesFormEmbed);
+  async function loadDutySignups() {
+    mountForm("den-guide-form-embed", SHEETS_CONFIG.dutySignupsFormEmbed);
+    mountForm("wisdom-form-embed", SHEETS_CONFIG.dutySignupsFormEmbed);
+    mountForm("flame-keeper-form-embed", SHEETS_CONFIG.dutySignupsFormEmbed);
 
-    const rows = await fetchSheetTab(SHEETS_CONFIG.dracoDutiesUrl);
-    const isLive = !!SHEETS_CONFIG.dracoDutiesUrl && rows;
-    const data = rows || SAMPLE_DRACO_DUTIES;
+    const rows = await fetchSheetTab(SHEETS_CONFIG.dutySignupsUrl);
+    const isLive = !!SHEETS_CONFIG.dutySignupsUrl && rows;
+    const data = rows || SAMPLE_DUTY_SIGNUPS;
 
+    // Den Guides
     const denGuides = data.filter((r) => dutiesOf(r).includes("den guide"));
     const guideEl = document.getElementById("den-guide-roster");
     if (!denGuides.length) {
       guideEl.innerHTML = `<li><span class="meta">No Den Guides signed up yet.</span></li>`;
     } else {
       guideEl.innerHTML = denGuides
-        .map((k) => `<li><span class="who">${k.Name}</span><span class="meta">${k.Homeroom}</span></li>`)
+        .map((k) => `<li><span class="who">${fullName(k)}</span><span class="meta">${k.Homeroom}</span></li>`)
         .join("");
     }
     connectionNote(guideEl, isLive);
 
+    // Wisdom Keepers
     wisdomRows = data.filter((r) => dutiesOf(r).includes("wisdom keeper"));
     renderWisdomKeepers(document.getElementById("wisdom-filter").value);
     connectionNote(document.getElementById("wisdom-roster"), isLive);
+
+    // Loyalty Flame Keepers
+    const flameKeepers = data.filter((r) => dutiesOf(r).includes("loyalty flame keeper"));
+    const flameEl = document.getElementById("flame-keeper-roster");
+    if (!flameKeepers.length) {
+      flameEl.innerHTML = `<li><span class="meta">No Loyalty Flame Keepers assigned or signed up yet this month.</span></li>`;
+    } else {
+      flameEl.innerHTML = flameKeepers
+        .map(
+          (k) =>
+            `<li><span class="who">${fullName(k)}</span><span class="meta">${k.Homeroom}${k["How assigned?"] ? " &middot; " + k["How assigned?"] : ""}</span></li>`
+        )
+        .join("");
+    }
+    connectionNote(flameEl, isLive);
   }
   function renderWisdomKeepers(filter) {
     const f = (filter || "").toLowerCase().trim();
-    const subj = (t) => t["Subject(s)"] || "";
-    const shown = f ? wisdomRows.filter((t) => subj(t).toLowerCase().includes(f)) : wisdomRows;
+    const areas = (t) => t["Subject area(s)"] || "";
+    const shown = f ? wisdomRows.filter((t) => areas(t).toLowerCase().includes(f)) : wisdomRows;
     const el = document.getElementById("wisdom-roster");
     if (!shown.length) {
-      el.innerHTML = `<li><span class="meta">${wisdomRows.length ? "No Wisdom Keepers match that subject yet." : "No Wisdom Keepers signed up yet."}</span></li>`;
+      el.innerHTML = `<li><span class="meta">${wisdomRows.length ? "No Wisdom Keepers match that subject area yet." : "No Wisdom Keepers signed up yet."}</span></li>`;
       return;
     }
     el.innerHTML = shown
       .map((t) => {
-        const help = (t["How can you help?"] || "")
+        const areaPills = areas(t)
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean);
         return `<li>
           <div>
-            <span class="who">${t.Name}</span>
-            <div class="meta">${t.Homeroom} &middot; ${subj(t)}</div>
+            <span class="who">${fullName(t)}</span>
+            <div class="meta">${t.Homeroom}</div>
           </div>
-          <div>${help.map((h) => `<span class="pill">${h}</span>`).join("")}</div>
+          <div>${areaPills.map((a) => `<span class="pill">${a}</span>`).join("")}</div>
         </li>`;
       })
       .join("");
   }
   document.getElementById("wisdom-filter").addEventListener("input", (e) => renderWisdomKeepers(e.target.value));
-
-  // ============================================================
-  // LOYALTY FLAME KEEPERS — roster (from "Loyalty Flame Keepers" tab)
-  // plus the gratitude action log (from "Gratitude Log" tab)
-  // ============================================================
-  async function loadFlameKeepers() {
-    mountForm("flame-keeper-form-embed", SHEETS_CONFIG.flameKeepersFormEmbed);
-    const rows = await fetchSheetTab(SHEETS_CONFIG.flameKeepersUrl);
-    const isLive = !!SHEETS_CONFIG.flameKeepersUrl && rows;
-    const data = rows || SAMPLE_FLAME_KEEPERS;
-    const el = document.getElementById("flame-keeper-roster");
-    if (!data.length) {
-      el.innerHTML = `<li><span class="meta">No Loyalty Flame Keepers assigned or signed up yet this month.</span></li>`;
-    } else {
-      el.innerHTML = data
-        .map(
-          (k) =>
-            `<li><span class="who">${k.Name}</span><span class="meta">${k.Homeroom}${k["How assigned?"] ? " &middot; " + k["How assigned?"] : ""}</span></li>`
-        )
-        .join("");
-    }
-    connectionNote(el, isLive);
-  }
 
   async function loadGratitudeLog() {
     mountForm("gratitude-form-embed", SHEETS_CONFIG.gratitudeFormEmbed);
@@ -324,35 +323,58 @@
   }
 
   // ============================================================
-  // DRAGON'S LAIR — House Leadership page (static, from data.js)
+  // HOUSE OF DRACO LEADERS — faculty and House Captain, both live
+  // from the single "Faculty" tab (captain is the row with Type=Captain)
   // ============================================================
-  function renderLeadership() {
+  const DEFAULT_CAPTAIN = { Name: "Add your House Captain's name", Photo: "", Year: "" };
+
+  async function loadFaculty() {
+    const rows = await fetchSheetTab(SHEETS_CONFIG.facultyUrl);
+    const isLive = !!SHEETS_CONFIG.facultyUrl && rows;
+    const data = rows || SAMPLE_FACULTY;
+
+    const isCaptainRow = (r) => (r.Type || "").trim().toLowerCase() === "captain";
+    const facultyRows = data.filter((r) => !isCaptainRow(r));
+    const captainRow = data.find(isCaptainRow) || DEFAULT_CAPTAIN;
+
     const facultyEl = document.getElementById("faculty-grid");
     if (facultyEl) {
-      facultyEl.innerHTML = HOUSE_FACULTY.map(
-        (f) => `
-        <div class="faculty-card">
-          ${avatarHTML(f.name, f.photo, 72)}
-          <div class="faculty-info">
-            <h4>${f.name}</h4>
-            <p class="faculty-role">${f.role}</p>
-            <p class="faculty-classes">${f.classes.join(", ")}</p>
-            <p class="faculty-room">Room ${f.room}</p>
-          </div>
-        </div>`
-      ).join("");
+      if (!facultyRows.length) {
+        facultyEl.innerHTML = `<p class="note">No faculty listed yet &mdash; add rows to the Faculty tab.</p>`;
+      } else {
+        facultyEl.innerHTML = facultyRows
+          .map((f) => {
+            const classes = (f.Classes || "")
+              .split(",")
+              .map((c) => c.trim())
+              .filter(Boolean)
+              .join(", ");
+            return `
+            <div class="faculty-card">
+              ${avatarHTML(f.Name, f.Photo, 72)}
+              <div class="faculty-info">
+                <h4>${f.Name}</h4>
+                <p class="faculty-role">${f.Role || ""}</p>
+                <p class="faculty-classes">${classes}</p>
+                <p class="faculty-room">Room ${f.Room || "\u2014"}</p>
+              </div>
+            </div>`;
+          })
+          .join("");
+      }
+      connectionNote(facultyEl, isLive);
     }
+
     const captainEl = document.getElementById("captain-spotlight");
     if (captainEl) {
       captainEl.innerHTML = `
-        ${avatarHTML(HOUSE_CAPTAIN.name, HOUSE_CAPTAIN.photo, 120)}
+        ${avatarHTML(captainRow.Name, captainRow.Photo, 120)}
         <div>
-          <div class="eyebrow" style="color:var(--magenta);">House Captain, ${HOUSE_CAPTAIN.year}</div>
-          <h3 style="margin:0;">${HOUSE_CAPTAIN.name}</h3>
+          <div class="eyebrow" style="color:var(--magenta);">House Captain${captainRow.Year ? ", " + captainRow.Year : ""}</div>
+          <h3 style="margin:0;">${captainRow.Name}</h3>
         </div>`;
     }
   }
-  renderLeadership();
 
   // ---------- Teacher "open the spreadsheet" link ----------
   const sheetLink = document.getElementById("watch-sheet-link");
@@ -367,8 +389,8 @@
   // ---------- Load everything, then refresh on an interval ----------
   function loadAll() {
     loadSchedule();
-    loadDracoDuties();
-    loadFlameKeepers();
+    loadFaculty();
+    loadDutySignups();
     loadGratitudeLog();
   }
   loadAll();
