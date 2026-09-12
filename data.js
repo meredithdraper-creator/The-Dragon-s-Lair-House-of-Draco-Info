@@ -6,14 +6,14 @@
    ============================================================ */
 
 // ---- Homerooms (HR) in the House of Draco ----
-// id: short code used internally, label: what students see, teacher: HR teacher name
+// id: short code used internally, label: what appears on the site and must
+// match the "Homeroom" dropdown options on your Google Form exactly.
+// EDIT ME if your homeroom list changes.
 const HOMEROOMS = [
-  { id: "hr-101", label: "HR 101", teacher: "Mr. Alden" },
-  { id: "hr-102", label: "HR 102", teacher: "Ms. Farrow" },
-  { id: "hr-103", label: "HR 103", teacher: "Mr. Osei" },
-  { id: "hr-104", label: "HR 104", teacher: "Ms. Whitlock" },
-  { id: "hr-105", label: "HR 105", teacher: "Mr. Reyes" },
-  { id: "hr-106", label: "HR 106", teacher: "Ms. Bianchi" },
+  { id: "ledford", label: "Ledford" },
+  { id: "listenbee", label: "Listenbee" },
+  { id: "owens", label: "Owens" },
+  { id: "vancamp", label: "VanCamp" },
 ];
 
 // ---- Weekly Den Keepers: the HR on duty to tidy the hallway and ensure ----
@@ -44,7 +44,7 @@ const WEEKLY_WATCH_CHECKLIST = [
 // If a week isn't listed here, the site falls back to auto-rotating through HOMEROOMS
 // in order, so there's always a homeroom on duty even before you assign one.
 const WEEKLY_WATCH_SCHEDULE = [
-  // { weekOf: "2026-09-14", hrId: "hr-101" },
+  // { weekOf: "2026-09-14", hrId: "ledford" },
 ];
 
 // ---- Vault Rotation: weekly locker cleanout, rotates through every HR ----
@@ -52,7 +52,7 @@ const WEEKLY_WATCH_SCHEDULE = [
 // add explicit overrides the same way as above if you need to swap a week.
 const VAULT_ROTATION_ORDER = HOMEROOMS.map((hr) => hr.id);
 const VAULT_ROTATION_SCHEDULE = [
-  // { weekOf: "2026-09-14", hrId: "hr-103" },
+  // { weekOf: "2026-09-14", hrId: "owens" },
 ];
 
 // ---- Loyalty Flame Keepers: monthly gratitude department focus ----
@@ -161,59 +161,9 @@ const GRATITUDE_METHODS = [
   { id: "appreciation", label: "Public appreciation", detail: "A shout-out, poster, or mention that recognizes them in front of others." },
 ];
 
-// ---- House Faculty: Draco's teachers and staff leadership ----
-// photo: path to an image in assets/faculty/ (e.g. "assets/faculty/alden.jpg").
-// Leave photo as "" to show an initials placeholder until you have a real photo.
-// EDIT ME: replace with your real House of Draco faculty.
-const HOUSE_FACULTY = [
-  {
-    name: "Mr. Alden",
-    role: "Homeroom Teacher, HR 101",
-    classes: ["Algebra II", "Geometry"],
-    room: "204",
-    photo: "",
-  },
-  {
-    name: "Ms. Farrow",
-    role: "Homeroom Teacher, HR 102",
-    classes: ["English 10", "AP English Language"],
-    room: "118",
-    photo: "",
-  },
-  {
-    name: "Mr. Osei",
-    role: "Homeroom Teacher, HR 103",
-    classes: ["Biology", "Environmental Science"],
-    room: "231",
-    photo: "",
-  },
-  {
-    name: "Ms. Whitlock",
-    role: "Homeroom Teacher, HR 104",
-    classes: ["World History", "AP U.S. History"],
-    room: "112",
-    photo: "",
-  },
-  {
-    name: "Mr. Reyes",
-    role: "Homeroom Teacher, HR 105",
-    classes: ["Spanish II", "Spanish III"],
-    room: "145",
-    photo: "",
-  },
-  {
-    name: "Ms. Bianchi",
-    role: "Homeroom Teacher, HR 106",
-    classes: ["Chemistry", "Physics"],
-    room: "227",
-    photo: "",
-  },
-];
-
-// ---- House Captain: this year's student leader for the House of Draco ----
-// EDIT ME: replace with your real House Captain's name, year, and photo.
-const HOUSE_CAPTAIN = {
-  name: "Add your House Captain's name",
-  year: "2026–27",
-  photo: "",
-};
+// ---- House Faculty & Captain ----
+// Both now live in the shared Google Sheet's "Faculty" tab, not here, so
+// non-technical admins can update them directly. A row's "Type" column is
+// "Captain" for the House Captain and blank (or "Faculty") for everyone else.
+// See sheets.js for the fallback sample data shown until that tab is
+// connected, and the README for setup.
