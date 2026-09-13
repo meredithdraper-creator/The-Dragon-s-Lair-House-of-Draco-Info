@@ -171,11 +171,13 @@
     width:220px;
     height:auto;
     flex:none;
+    margin-right:.75rem;
+    transform:translateX(-20px);
     filter:drop-shadow(0 10px 24px rgba(74,18,104,.25));
   }
   @media(max-width:700px){
     .hero-row{flex-direction:column;align-items:flex-start;}
-    .hero-dragon{width:150px;align-self:center;}
+    .hero-dragon{width:150px;align-self:center;margin-right:0;transform:none;}
   }
   .home-grid{
     display:grid;
@@ -427,7 +429,7 @@
     <div class="site-hero-content">
       <img class="site-hero-wordmark" src="assets/draco-title-white.png" alt="House of Draco">
       <h1>Welcome to the Dragon's Lair</h1>
-      <p>Keeping our hall in order is a joint effort &mdash; showing loyalty to Draco means doing your part to help maintain it.</p>
+      <p>Keeping our house in order is a joint effort &mdash; showing loyalty to Draco means doing your part to help maintain it.</p>
     </div>
   </div>
   <nav class="tabs" id="tabs">
