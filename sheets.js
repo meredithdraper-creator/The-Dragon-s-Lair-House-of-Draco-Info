@@ -22,7 +22,7 @@ const SHEETS_CONFIG = {
   // Paste your four "Publish to web" CSV links here.
   facultyUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=1000012180&single=true&output=csv",        // House Leaders tab (teachers/admins edit this one directly — no form)
   dutySignupsUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=2130038648&single=true&output=csv",    // Dragon Duty Signup form responses (Den Guide + Wisdom Keeper + Loyalty Flame Keeper — one shared tab)
-  gratitudeUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=859687409&single=true&output=csv",      // Gratitude Log form responses
+  gratitudeUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=212447375&single=true&output=csv",      // Gratitude Log form responses (Form Responses 2 tab)
   scheduleUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSZIT_g6oEpucUtxuyYUeffTuPZkHQnSyS9QxSTE-UzXEF65ElK6MmpKdZqO7L4yhE0J6azemNWHbAz/pub?gid=1616678462&single=true&output=csv",       // Schedule tab (teachers edit this one directly — no form)
 
   // Paste your two Google Form "embed" links here (Send -> <> -> copy embed src).
@@ -157,8 +157,26 @@ const SAMPLE_DUTY_SIGNUPS = [
 ];
 
 const SAMPLE_GRATITUDE = [
-  { Timestamp: "9/8/2026 12:10:00", Name: "Noor Aziz", Method: "Handwritten card", "What did you do?": "Left a thank-you card for the dining staff after lunch." },
-  { Timestamp: "9/9/2026 15:40:00", Name: "Teo Ramos", Method: "In-person encounter", "What did you do?": "Thanked the bus driver by name this morning." },
+  {
+    Timestamp: "9/8/2026 12:10:00",
+    "Your First Name": "Noor",
+    "Your Last Name": "Aziz",
+    Homeroom: "Ledford",
+    "To whom to you express your gratitude?": "the dining staff",
+    "In what way did you express your gratitude?": "Handwritten card",
+    "What impact do you think your actions had?": "Made their day a little brighter after a busy lunch rush.",
+    "How did this act help you feel connected to our Woodward or Draco community?": "It reminded me the whole school runs on people helping each other.",
+  },
+  {
+    Timestamp: "9/9/2026 15:40:00",
+    "Your First Name": "Teo",
+    "Your Last Name": "Ramos",
+    Homeroom: "Owens",
+    "To whom to you express your gratitude?": "the bus driver",
+    "In what way did you express your gratitude?": "In-person encounter",
+    "What impact do you think your actions had?": "He seemed genuinely happy to be recognized.",
+    "How did this act help you feel connected to our Woodward or Draco community?": "Made the morning commute feel more like a community.",
+  },
 ];
 
 const SAMPLE_SCHEDULE = [
