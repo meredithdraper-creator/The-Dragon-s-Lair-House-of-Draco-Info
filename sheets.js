@@ -30,8 +30,9 @@ const SHEETS_CONFIG = {
   dutySignupsFormEmbed: "https://docs.google.com/forms/d/e/1FAIpQLSdiWvqyLztCkdO8tbNDTbrdoJCPomaDwMrbmbr3iqkL4FrH7Q/viewform?embedded=true",  // shown on the Vault Rotation, Wisdom Keepers, AND Loyalty Flame Keepers pages
   gratitudeFormEmbed: "",
 
-  // The normal (non-published) URL to the spreadsheet itself, for the
-  // "Open the spreadsheet" link teachers use to edit the Schedule tab directly.
+  // The normal (non-published) URL to the spreadsheet itself. No longer
+  // linked to from the site, but kept here in case you want it for your
+  // own reference or a future teacher-facing page.
   // Looks like: https://docs.google.com/spreadsheets/d/1AbCdEfG.../edit
   spreadsheetEditUrl: "https://docs.google.com/spreadsheets/d/1TMTRglVa_vAiHf-z8-kqIhz30MEKXThiSMlq7iuGyKI/edit",
 
