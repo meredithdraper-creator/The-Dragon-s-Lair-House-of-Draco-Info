@@ -242,6 +242,31 @@
       .map((r) => `<li><span class="who">${fullName(r)}</span><span class="meta">${r.Homeroom}</span></li>`)
       .join("");
   }
+  // Same idea as renderNameHRList, but also shows each Wisdom Keeper's
+  // subject-area pills — used for the Home page summary list.
+  function renderWisdomMiniList(elId, rows, emptyMsg) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (!rows.length) {
+      el.innerHTML = `<li><span class="meta">${emptyMsg}</span></li>`;
+      return;
+    }
+    el.innerHTML = rows
+      .map((t) => {
+        const areaPills = (t["Subject area(s)"] || "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        return `<li>
+          <div>
+            <span class="who">${fullName(t)}</span>
+            <div class="meta">${t.Homeroom}</div>
+          </div>
+          <div>${areaPills.map((a) => `<span class="pill">${a}</span>`).join("")}</div>
+        </li>`;
+      })
+      .join("");
+  }
   async function loadDutySignups() {
     mountForm("den-guide-form-embed", SHEETS_CONFIG.dutySignupsFormEmbed);
     mountForm("wisdom-form-embed", SHEETS_CONFIG.dutySignupsFormEmbed);
@@ -268,7 +293,7 @@
     wisdomRows = data.filter((r) => dutiesOf(r).includes("wisdom keeper"));
     renderWisdomKeepers(document.getElementById("wisdom-filter").value);
     connectionNote(document.getElementById("wisdom-roster"), isLive);
-    renderNameHRList("home-wisdom-roster", wisdomRows, "No Wisdom Keepers signed up yet.");
+    renderWisdomMiniList("home-wisdom-roster", wisdomRows, "No Wisdom Keepers signed up yet.");
 
     // Loyalty Flame Keepers
     const flameKeepers = data.filter((r) => dutiesOf(r).includes("loyalty flame keeper"));
