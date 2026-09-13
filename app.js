@@ -363,10 +363,12 @@
       el.innerHTML = entries
         .slice()
         .reverse()
-        .map(
-          (e) =>
-            `<li><span class="pill">${e.Method}</span><div><strong>${e.Name}</strong> &mdash; ${e["What did you do?"]}</div></li>`
-        )
+        .map((e) => {
+          const name = `${e["Your First Name"] || ""} ${e["Your Last Name"] || ""}`.trim();
+          const recipient = e["To whom to you express your gratitude?"] || "";
+          const method = e["In what way did you express your gratitude?"] || "";
+          return `<li><span class="pill">${method}</span><div><strong>${name}</strong> recognized ${recipient}</div></li>`;
+        })
         .join("");
     }
     connectionNote(el, isLive);
