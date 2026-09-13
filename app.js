@@ -229,6 +229,19 @@
       .split(",")
       .map((s) => s.trim().toLowerCase());
   }
+  // Renders a compact name + homeroom roster list into any <ul>, reused for
+  // both the full per-page rosters and the condensed Home page summary.
+  function renderNameHRList(elId, rows, emptyMsg) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (!rows.length) {
+      el.innerHTML = `<li><span class="meta">${emptyMsg}</span></li>`;
+      return;
+    }
+    el.innerHTML = rows
+      .map((r) => `<li><span class="who">${fullName(r)}</span><span class="meta">${r.Homeroom}</span></li>`)
+      .join("");
+  }
   async function loadDutySignups() {
     mountForm("den-guide-form-embed", SHEETS_CONFIG.dutySignupsFormEmbed);
     mountForm("wisdom-form-embed", SHEETS_CONFIG.dutySignupsFormEmbed);
@@ -249,11 +262,13 @@
         .join("");
     }
     connectionNote(guideEl, isLive);
+    renderNameHRList("home-denguide-roster", denGuides, "No Den Guides signed up yet.");
 
     // Wisdom Keepers
     wisdomRows = data.filter((r) => dutiesOf(r).includes("wisdom keeper"));
     renderWisdomKeepers(document.getElementById("wisdom-filter").value);
     connectionNote(document.getElementById("wisdom-roster"), isLive);
+    renderNameHRList("home-wisdom-roster", wisdomRows, "No Wisdom Keepers signed up yet.");
 
     // Loyalty Flame Keepers
     const flameKeepers = data.filter((r) => dutiesOf(r).includes("loyalty flame keeper"));
@@ -269,6 +284,14 @@
         .join("");
     }
     connectionNote(flameEl, isLive);
+    renderNameHRList(
+      "home-flame-roster",
+      flameKeepers,
+      "No Loyalty Flame Keepers assigned or signed up yet this month."
+    );
+
+    // Single connection note for the whole Home page summary.
+    connectionNote(document.getElementById("home-roster-grid"), isLive);
   }
   function renderWisdomKeepers(filter) {
     const f = (filter || "").toLowerCase().trim();
@@ -389,16 +412,6 @@
           <h3 style="margin:0;">${captainRow.Name}</h3>
         </div>`;
     }
-  }
-
-  // ---------- Teacher "open the spreadsheet" link ----------
-  const sheetLink = document.getElementById("watch-sheet-link");
-  if (SHEETS_CONFIG.spreadsheetEditUrl) {
-    sheetLink.href = SHEETS_CONFIG.spreadsheetEditUrl;
-  } else {
-    sheetLink.textContent = "Add spreadsheetEditUrl in sheets.js to link here";
-    sheetLink.style.pointerEvents = "none";
-    sheetLink.style.opacity = ".6";
   }
 
   // ---------- Load everything, then refresh on an interval ----------
