@@ -28,7 +28,7 @@ const SHEETS_CONFIG = {
   // Paste your two Google Form "embed" links here (Send -> <> -> copy embed src).
   // Looks like: https://docs.google.com/forms/d/e/1FAIpQ.../viewform?embedded=true
   dutySignupsFormEmbed: "https://docs.google.com/forms/d/e/1FAIpQLSdiWvqyLztCkdO8tbNDTbrdoJCPomaDwMrbmbr3iqkL4FrH7Q/viewform?embedded=true",  // shown on the Vault Rotation, Wisdom Keepers, AND Loyalty Flame Keepers pages
-  gratitudeFormEmbed: "",
+  gratitudeFormEmbed: "https://docs.google.com/forms/d/e/1FAIpQLScm5ZJHamyhIT0NBrwiOxKdglKq1AFXCHM46P8s-PHLM4MRwQ/viewform?embedded=true",
 
   // The normal (non-published) URL to the spreadsheet itself. No longer
   // linked to from the site, but kept here in case you want it for your
