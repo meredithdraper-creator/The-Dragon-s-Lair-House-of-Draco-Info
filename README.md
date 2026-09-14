@@ -9,7 +9,7 @@ A static, interactive site for the House of Draco, wired to Google Forms and a G
 ## The programs
 
 - **Weekly Den Keepers** &mdash; the homeroom on duty each week to tidy the hallway and make sure every locker is fully closed.
-- **Vault Rotation** &mdash; a separate weekly rotation where one homeroom handles a full locker cleanout, supported by the **Den Guides**: students who volunteer to help clean out and organize lockers year-round.
+- **Vault Rotation** &mdash; a separate weekly rotation where one homeroom handles a full locker cleanout and a check of their school email inbox (replying to anything that needs a response, and deleting or filing anything they're finished with), supported by the **Den Guides**: students who volunteer to help clean out and organize lockers year-round.
 - **Wisdom Keepers** &mdash; students who volunteer to help classmates study for classes, organize classwork, or review notes, by subject.
 - **Loyalty Flame Keepers** &mdash; the gratitude spotlight. Each month the House focuses on a different department, and Loyalty Flame Keepers &mdash; assigned by their HR or volunteering &mdash; are the students who carry gratitude to that department, logging what they did.
 - **Dragon's Lair** &mdash; the House leadership page: all House faculty (photo, classes taught, room number) and this year's student House Captain.
